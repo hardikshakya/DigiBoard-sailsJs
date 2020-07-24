@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>New Sails App</title>
+    <title>DigiBoard</title>
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -9,34 +9,38 @@
     <%/* If you want to discourage search engines from indexing this site, uncomment the following line: */%>
     <%/* <meta name="robots" content="noindex"> */%>
 
-
-    <!--
-        Stylesheets and Preprocessors
-        ==============================
-
-        You can always bring in CSS files manually with `<link>` tags, or asynchronously
-        using a solution like AMD (RequireJS).  Or, if you like, you can take advantage
-        of Sails' conventional asset pipeline (boilerplate Gruntfile).
-
-        By default, stylesheets from your `assets/styles` folder are included
-        here automatically (between STYLES and STYLES END). Both CSS (.css) and LESS (.less)
-        are supported. In production, your styles will be minified and concatenated into
-        a single file.
-
-        To customize any part of the built-in behavior, just edit `tasks/pipeline.js`.
-        For example, here are a few things you could do:
-
-            + Change the order of your CSS files
-            + Import stylesheets from other directories
-            + Use a different or additional preprocessor, like SASS, SCSS or Stylus
-    -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--STYLES-->
+    <link rel="stylesheet" href="/styles/bootstrap.css">
+    <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
   </head>
 
   <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand" style="font-size: 30px; color: aquamarine;" href="/">DigiBoard</a>
+      </div>
+    </nav>
+
     <%- body %>
+
+    <div class="container">
+      <hr>
+      <footer class="footer pull-right">
+        <a href="https://github.com/hardikshakya">
+          <i class="fa fa-github" style="font-size:20px">
+            Hardik Shakya
+          </i>
+        </a>
+        <div>created with love, by hardik</div>
+      </footer>
+    </div>
 
 
 
@@ -62,6 +66,7 @@
     -->
 
     <!--TEMPLATES-->
+
     <!--TEMPLATES END-->
 
 
@@ -105,6 +110,8 @@
     -->
 
     <!--SCRIPTS-->
+    <script src="/dependencies/sails.io.js"></script>
+    <script src="/js/bootstrap.js"></script>
     <!--SCRIPTS END-->
   </body>
 </html>
