@@ -42,6 +42,7 @@ var jsFilesToInject = [
   // in no particular order.  To customize the ordering, add additional items
   // here, _above_ this one.
   'js/jquery.js',
+  'js/jquery.validate.min.js',
 
   'js/**/*.js'
 ];
