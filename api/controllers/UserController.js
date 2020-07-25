@@ -7,15 +7,23 @@
 
 module.exports = {
   signup_page: (req, res) => {
+    res.locals.flash = _.clone(req.session.flash);
     res.view();
+    req.session.flash = {};
   },
 
-  signup: (req, res, next) => {
-    User.create(req.allParams(), (err, user) => {
-      if (err) return next(err);
+  signup: async (req, res) => {
+    try {
+      await User.create(req.allParams());
+      res.send('Good');
+      req.session.flash = {};
+    } catch (err) {
+      req.session.flash = {
+        err: err
+      };
 
-      res.json(user);
-    });
+      return res.redirect('/user/signup_page');
+    }
   },
 
 };
