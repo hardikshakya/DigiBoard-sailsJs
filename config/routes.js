@@ -23,6 +23,8 @@ module.exports.routes = {
 
   '/user/signup_page': 'user/signup_page',
 
+  '/user/signup': 'user/signup',
+
 
   /***************************************************************************
   *                                                                          *

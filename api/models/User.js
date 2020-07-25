@@ -35,5 +35,12 @@ module.exports = {
     }
   },
 
+  customToJSON: function () {
+    return _.omit(
+      this,
+      ['password', 'confirmation', 'encryptedPassword', '_csrf']
+    );
+  },
+
 };
 

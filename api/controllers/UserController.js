@@ -8,6 +8,14 @@
 module.exports = {
   signup_page: (req, res) => {
     res.view();
-  }
+  },
+
+  signup: (req, res, next) => {
+    User.create(req.allParams(), (err, user) => {
+      if (err) return next(err);
+
+      res.json(user);
+    });
+  },
 
 };
