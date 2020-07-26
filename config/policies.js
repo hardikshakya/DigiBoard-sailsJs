@@ -19,4 +19,16 @@ module.exports.policies = {
 
   '*': 'flash',
 
+  user: {
+    'signup_page': 'flash',
+    'signup': 'flash',
+
+    'showProfile': 'userCanSeeProfile',
+    'editUser' : 'userCanSeeProfile',
+    'updateUser': 'userCanSeeProfile',
+
+    'indexUser': 'admin',
+    'destroyUser': 'admin',
+  }
+
 };

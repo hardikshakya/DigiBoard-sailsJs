@@ -8,6 +8,7 @@
 const request = require('request');
 const jwt = require('jsonwebtoken');
 const url = require('url');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   signup_page: (req, res) => {
@@ -24,7 +25,20 @@ module.exports = {
 
   signup: async (req, res) => {
     try {
-      const userData = await User.create(req.allParams());
+      const reqObj = req.allParams();
+
+      if (!reqObj.password  || reqObj.password !== reqObj.confirmation) {
+        req.session.flash = {
+          err: ['Password doesn\'t match password confirmation.']
+        };
+        return res.redirect('/user/signup_page');
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const encryptedPassword = await bcrypt.hash(reqObj.password, salt);
+
+      reqObj.encryptedPassword = encryptedPassword;
+      const userData = await User.create(reqObj).fetch();
 
       req.session.authenticated = true;
       req.session.User = userData;
@@ -42,7 +56,8 @@ module.exports = {
   sendmail: async (req, res) => {
     try {
       const userData = await User.findOne(req.param('id'));
-      const token = jwt.sign(userData.id, sails.config.custom.jwtTokenSecret, { expiresIn: '1h'});
+      const token = jwt.sign({ id: userData.id }, sails.config.custom.jwtTokenSecret, { expiresIn: '1h' });
+      console.log(`http://localhost:1337/user/confirmation?id=${token}`);
       const options = {
         method: 'POST',
         url: 'https://api.sendgrid.com/v3/mail/send',
@@ -77,7 +92,7 @@ module.exports = {
         if (error) return res.HandleResponse(error, false);
 
         req.session.authenticated = false;
-        res.redirect('/');
+        res.redirect('/session/loginpage');
       });
     } catch (error) {
       return res.HandleResponse(error, false);
@@ -89,8 +104,8 @@ module.exports = {
     try {
       const urlParts = url.parse(req.url, true);
       const urlInfo = urlParts.query;
-      const userId = jwt.verify(urlInfo.id, sails.config.custom.jwtTokenSecret);
-      const userData = await User.findOne(userId);
+      const urlData = jwt.verify(urlInfo.id, sails.config.custom.jwtTokenSecret);
+      const userData = await User.findOne(urlData.id);
 
       req.session.authenticated = true;
       req.session.User = userData;

@@ -15,16 +15,64 @@
     <link rel="stylesheet" href="/styles/bootstrap.css">
     <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
+
+    <script type="text/javascript">
+      window.overlord = { csrf: "<%= _csrf %>" };
+    </script>
   </head>
 
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
         <a class="navbar-brand" style="font-size: 30px; color: aquamarine;" href="/">DigiBoard</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <% if (session.authenticated && session.verified) { %>
+            <form>
+                <input type="text" name="idd" id="haha" value="<%= session.User.id %>" hidden>
+                <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+            </form>
+            <li class="nav-item active ml-3">
+                <a class="nav-link" href="/user/showprofile/<%= session.User.id %>"> <%= session.User.name %> <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <input type="number" name="noti" id="noti" value="0" hidden>
+              <a class="nav-link" href="#"> Notification <mark class="blue tada" id="notic" hidden></mark></a>
+            </li>
+
+            <% if (session.User.role === 'publisher') { %>
+              <li class="nav-item">
+                <a class="nav-link" href="/user/indexuser"> User Administration </a>
+              </li>
+            <% } %>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#">Billbords</a>
+            </li>
+          <% } %>
+        </ul>
+        <div class="navbar-right">
+          <% if (session.authenticated && session.verified) { %>
+            <a class="btn btn-outline-warning my-2 my-sm-0 mr-4" href="/session/logout">sign-out</a>
+          <% } %>
+        </div>
+        <% if ((!session.authenticated) && (!session.verified)) { %>
+          <form class="form-inline my-2 my-lg-0" action="/session/login">
+            <div class="form-group">
+              <input type="text" placeholder="Email" name="email" class="form-control ml-2">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" name="password" class="form-control ml-2">
+            </div>
+            <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="submit">Sign in</button>
+            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+          </form>
+        <% } %>
       </div>
     </nav>
 

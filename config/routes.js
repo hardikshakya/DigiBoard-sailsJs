@@ -42,6 +42,10 @@ module.exports.routes = {
 
   '/user/destroyuser/:id': 'user/destroyUser',
 
+  '/session/loginpage': 'session/loginPage',
+  '/session/login': 'session/logIn',
+  '/session/logout': 'session/logOut',
+
 
   /***************************************************************************
   *                                                                          *
