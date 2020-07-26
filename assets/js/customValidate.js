@@ -22,6 +22,12 @@ $(document).ready(() => {
       banner_name: {
         required: true
       },
+      username: {
+        required: true
+      },
+      designation: {
+        required: true
+      },
       place: {
         required: true
       },

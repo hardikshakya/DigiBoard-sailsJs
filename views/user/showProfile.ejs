@@ -1,0 +1,28 @@
+<div class='container mt-4'>
+
+	<h1> <%= user.name %> </h1>
+	<% if (user.role === 'publisher') { %>
+		<img src="/images/admin.png">publisher
+	<% } if(user.role === 'advertiser') { %>
+		<img src="/images/pawn.png">advertiser
+  <% } %>
+
+  <hr>
+
+	<h3> Contact: <%= user.email %>  </h3>
+	<% if(user.role === 'advertiser') { %>
+		<h3>User Name: <%= user.username %>  </h3>
+		<h3>Mobile Num: <%= user.mobile %>  </h3>
+		<h3>Address: <%= user.address %>  </h3>
+		<h3>Designation: <%= user.designation %>  </h3>
+	<% } %>
+	<% if(user.role === 'publisher') { %>
+		<h3>User Name: <%= user.username %>  </h3>
+		<h3>Mobile Num: <%= user.mobile %>  </h3>
+		<h3>Address: <%= user.address %>  </h3>
+		<h3>Designation: <%= user.designation %>  </h3>
+	<% } %>
+
+	<a class="btn btn-medium btn-warning mt-3" href="/user/edituser/<%= user.id %>">Edit Profile</a>
+
+</div>

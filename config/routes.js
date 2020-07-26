@@ -22,8 +22,25 @@ module.exports.routes = {
   '/': { view: 'pages/homepage' },
 
   '/user/signup_page': 'user/signup_page',
+  '/user/publishercreatepage/:id': 'user/publisherCreatePage',
+  '/user/advertisercreatepage/:id': 'user/advertiserCreatePage',
 
   '/user/signup': 'user/signup',
+  '/user/createpublisher': 'user/createPublisher',
+  '/user/createadvertiser': 'user/createAdvertiser',
+
+  '/user/sendmail/:id': 'user/sendmail',
+  '/user/confirmation': 'user/confirmation',
+
+  '/user/showprofile/:id': 'user/showProfile',
+
+  '/user/indexuser': 'user/indexUser',
+
+  '/user/edituser/:id': 'user/editUser',
+
+  '/user/updateuser/:id': 'user/updateUser',
+
+  '/user/destroyuser/:id': 'user/destroyUser',
 
 
   /***************************************************************************

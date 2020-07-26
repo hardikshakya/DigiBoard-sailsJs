@@ -1,0 +1,11 @@
+<form action="/user/updateuser/<%= user.id %>" method="POST" class="form-signin" id="edit-form">
+  <h2> Hey, you're editing a user... </h2>
+
+  <input value="<%= user.name %>" name="name" type="text" class="form-control"/>
+  <input value="<%= user.username %>" name="username" type="text" class="form-control"/>
+  <input value="<%= user.mobile %>" name="mobile" type="number" class="form-control"/>
+  <input value="<%= user.address %>" name="address" type="text" class="form-control"/>
+  <input value="<%= user.designation %>" name="designation" type="text" class="form-control"/>
+  <input type="submit" value="Proceed" class="btn btn-lg btn-primary btn-block"/>
+  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+</form>
