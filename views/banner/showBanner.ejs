@@ -1,0 +1,14 @@
+<div class='container mt-4'>
+	<h1><%= banner.banner_name %> </h1>
+	<hr>
+	<h3>Owner: <%= user.name %>  </h3>
+	<h3>Contact Owner: <%= user.email %>  </h3>
+  <h3>Address: <%= banner.location_address %>  </h3>
+	<h3>Size: <%= banner.banner_length %> * <%= banner.banner_height %>  </h3>
+	<input type="input" id="t1" value="<%= banner.id %>" hidden>
+  <input type="input" id="t2" value="" hidden>
+
+  <% if(session.User.role === 'publisher' && session.User.id === user.id) { %>
+		<a class="btn btn-medium btn-warning mt-3" href="/editbanner/editbanner/<%= banner.id %>">Edit Banner</a>
+	<% } %>
+</div>

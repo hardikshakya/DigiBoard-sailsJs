@@ -23,6 +23,16 @@
 		<h3>Designation: <%= user.designation %>  </h3>
 	<% } %>
 
-	<a class="btn btn-medium btn-warning mt-3" href="/user/edituser/<%= user.user_id %>">Edit Profile</a>
+  <a class="btn btn-medium btn-warning mt-3" href="/user/edituser/<%= user.user_id %>">Edit Profile</a>
+
+  <br>
+
+	<% if(user.role === 'publisher' && session.User.id === user.user_id) { %>
+		<a class="btn btn-medium btn-primary mt-3" href="/banner/newbanner/<%= user.user_id %>">Add New Banner</a>
+		<a class="btn btn-medium btn-primary mt-3" href="/banner/indexyourbanner/<%= user.user_id %>">Show Your Banners</a>
+		<br>
+	<% } %>
+	<% if(user.role === 'advertiser' && session.User.id === user.user_id) { %>
+	<% } %>
 
 </div>

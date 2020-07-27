@@ -1,0 +1,38 @@
+<div class="container mt-4">
+	<h3>Billbords</h3>
+	<table class='table'>
+		<tr>
+      <th></th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Address</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% _.each(banners, function(banner) { %>
+      <% if(banner.user_id == user_id) { %>
+		    <tr data-id="<%= banner.id %>" data-model="banner">
+          <% if (banner.active) { %>
+				    <td><img src="/images/icon-online.png"></td>
+			    <% } else { %>
+				    <td> <img src="/images/icon-offline.png"></td>
+			    <% } %>
+			    <td><%= banner.id %></td>
+			    <td><%= banner.banner_name %></td>
+          <td><%= banner.location_address %></td>
+          <td><a href="/banner/showbanner/<%= banner.id %>" class="btn btn-sm btn-primary">Show</a></td>
+          <td><a href="/banner/editbanner/<%= banner.id %>" class="btn btn-sm btn-warning">Edit</a></td>
+          <td>
+            <form action="/banner/destroybanner/<%= banner.id %>" method="POST">
+              <input type="hidden" name="_method" value="delete"/>
+              <input type="submit" class="btn btn-sm btn-danger" value="Delete"/>
+              <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+            </form>
+          </td>
+        </tr>
+      <% } %>
+		<% }) %>
+	</table>
+</div>

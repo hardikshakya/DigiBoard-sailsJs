@@ -46,6 +46,17 @@ module.exports.routes = {
   '/session/login': 'session/logIn',
   '/session/logout': 'session/logOut',
 
+  '/banner/newbanner/:id': 'banner/newBanner',
+
+  '/banner/createbanner': 'banner/createBanner',
+  '/banner/showbanner/:id': 'banner/showBanner',
+  '/banner/editbanner/:id': 'banner/editBanner',
+  '/banner/updatebanner/:id': 'banner/updateBanner',
+  '/banner/destroybanner/:id': 'banner/destroyBanner',
+
+  '/banner/indexyourbanner/:id': 'banner/indexYourBanner',
+  '/banner/indexbanner': 'user/indexBanner',
+
 
   /***************************************************************************
   *                                                                          *

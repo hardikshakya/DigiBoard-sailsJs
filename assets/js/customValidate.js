@@ -35,6 +35,18 @@ $(document).ready(() => {
         maxlength: 10,
         minlength: 10,
 	      required: true
+      },
+      location_address: {
+        required: true
+      },
+      city_name: {
+        required: true
+      },
+      region_name: {
+        required: true
+      },
+      country_name: {
+        required: true
       }
 	  },
     success: (element) => {

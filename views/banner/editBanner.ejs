@@ -1,0 +1,10 @@
+<form action="/banner/updatebanner/<%= banner.id %>" method="POST" class="form-signin">
+  <h2> Hey, you're editing a banner... </h2>
+
+  <input value="<%= banner.banner_name %>" name="banner_name" type="text" class="form-control"/>
+  <input value="<%= banner.location_address %>" name="location_address" type="text" class="form-control"/>
+  <input value="<%= banner.banner_length %>" name="banner_length" type="number" class="form-control"/>
+  <input value="<%= banner.banner_height %>" name="banner_height" type="number" class="form-control"/>
+  <input type="submit" value="Proceed" class="btn btn-lg btn-primary btn-block"/>
+  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+</form>

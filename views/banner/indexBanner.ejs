@@ -1,0 +1,106 @@
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+  <form class="form-inline" style="padding-left: 500px;" method="POST">
+	  <input class="form-control mr-sm-2" type="search" placeholder="Search City" aria-label="Search" id="sCity">
+	  <input class="form-control mr-sm-2" type="search" placeholder="Search State" aria-label="Search" id="sState">
+	  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="myFunction(); return false;">Search</button>
+	  <input type="hidden" name="_csrf" value="<%= _csrf %>">
+  </form>
+</nav>
+
+<div class="container mt-4">
+	<h3>Billbords</h3>
+	<table class='table' id="myTable">
+		<tr>
+      <th></th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Address</th>
+			<th>City</th>
+      <th>State</th>
+      <th>Country</th>
+			<th></th>
+			<th></th>
+		</tr>
+
+		<% _.each(banners, function(banner) { %>
+			<tr data-id="<%= banner.id %>" data-model="banner">
+        <% if (banner.active) { %>
+				  <td><img src="/images/icon-online.png"></td>
+			  <% } else { %>
+				  <td><img src="/images/icon-offline.png"></td>
+			  <% } %>
+			  <td><%= banner.id %></td>
+			  <td><%= banner.banner_name %></td>
+			  <td><%= banner.location_address %></td>
+			  <td><%= banner.city_name %></td>
+			  <td><%= banner.region_name %></td>
+        <td><%= banner.country_name %></td>
+			  <td><a href="/banner/showbanner/<%= banner.id %>" class="btn btn-sm btn-primary">Show</a></td>
+			</tr>
+		<% }) %>
+
+	</table>
+</div>
+
+<script>
+  const myFunction = () => {
+    let input, filter, table, tr, td, i, txtValue;
+
+  	cityN = document.getElementById("sCity");
+  	stateN = document.getElementById("sState");
+
+  	filter = cityN.value.toUpperCase();
+  	filter1 = stateN.value.toUpperCase();
+
+  	table = document.getElementById("myTable");
+  	tr = table.getElementsByTagName("tr");
+
+		if (cityN.value !== '' && stateN.value === '') {
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[4];   
+				if (td) {
+      		txtValue = td.textContent || td.innerText;
+
+      		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        	tr[i].style.display = "";
+      		} else {
+        		tr[i].style.display = "none";
+      		}
+    		}
+  		}
+    }
+
+		if(stateN.value !== '' && cityN.value === '') {
+			for (i = 0; i < tr.length; i++) {
+    		td = tr[i].getElementsByTagName("td")[5];
+
+				if (td) {
+      		txtValue = td.textContent || td.innerText;
+      		if (txtValue.toUpperCase().indexOf(filter1) > -1) {
+        		tr[i].style.display = "";
+      		} else {
+        		tr[i].style.display = "none";
+      		}
+    		}
+  		}
+    }
+
+		if (stateN.value !== '' && cityN.value !== '') {
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[4];
+    		tdd = tr[i].getElementsByTagName("td")[5];
+
+				if (td && tdd) {
+      		txtValue = td.textContent || td.innerText;
+          txtValuee = tdd.textContent || tdd.innerText;
+
+      		if (txtValue.toUpperCase().indexOf(filter) > -1 && txtValuee.toUpperCase().indexOf(filter1) > -1) {
+        		tr[i].style.display = "";
+      		} else {
+        		tr[i].style.display = "none";
+      		}
+    		}
+  		}
+		}
+}
+</script>
