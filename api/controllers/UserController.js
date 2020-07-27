@@ -266,7 +266,14 @@ module.exports = {
 
   destroyUser: async (req, res) => {
     try {
-      await User.destroy(req.param('id'));
+      const userData = await User.destroy(req.param('id')).fetch();
+
+      if (userData.role === 'publisher') {
+        await Publisher.destroy({ 'user_id': userData.id });
+      }
+      if (userData.role === 'advertiser') {
+        await Advertiser.destroy({ 'user_id': userData.id });
+      }
 
       res.redirect('/user/indexuser');
     } catch (error) {

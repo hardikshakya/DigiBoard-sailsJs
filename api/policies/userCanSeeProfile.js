@@ -1,7 +1,7 @@
 module.exports = (req, res, ok) => {
 
   let sessionUserMatchesId;
-  console.log(req.session.User, req.param('id'));
+
   if (req.session.User.id === parseInt(req.param('id'))) {
     sessionUserMatchesId = 1;
   } else {
