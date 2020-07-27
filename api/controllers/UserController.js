@@ -275,10 +275,31 @@ module.exports = {
         await Advertiser.destroy({ 'user_id': userData.id });
       }
 
+      sails.sockets.blast({
+        id: parseInt(req.param('id')),
+        verb : 'destroy',
+        model : 'user'
+      });
+
       res.redirect('/user/indexuser');
     } catch (error) {
       return res.HandleResponse(error, false);
     }
   },
+
+  subscribe: (req, res) => {
+    if (!req.isSocket) {
+      return res.badRequest('Only a client socket can subscribe to Louies.  But you look like an HTTP request to me.');
+    }
+
+    User.find((err, users) => {
+      if (err) return next(err);
+
+      User.subscribe(req.socket,  _.pluck(users, 'id'));
+      sails.sockets.join(req, 'user');
+
+      res.send(200);
+    });
+  }
 
 };

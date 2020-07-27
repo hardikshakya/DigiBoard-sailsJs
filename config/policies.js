@@ -29,6 +29,8 @@ module.exports.policies = {
 
     'indexUser': 'admin',
     'destroyUser': 'admin',
+
+    'subscribe': ['flash','authenticated'],
   }
 
 };

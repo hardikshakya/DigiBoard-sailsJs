@@ -19,6 +19,12 @@
     <script type="text/javascript">
       window.overlord = { csrf: "<%= _csrf %>" };
     </script>
+
+    <audio id="chatAudio">
+      <source src="/sounds/notify.ogg" type="audio/ogg">
+      <source src="/sounds/notify.mp3" type="audio/mpeg">
+      <source src="/sounds/notify.wav" type="audio/wav">
+    </audio>
   </head>
 
   <body>
@@ -34,15 +40,15 @@
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <% if (session.authenticated && session.verified) { %>
             <form>
-                <input type="text" name="idd" id="haha" value="<%= session.User.id %>" hidden>
+                <input type="text" name="idd" id="user_id_temp" value="<%= session.User.id %>" hidden>
                 <input type="hidden" name="_csrf" value="<%= _csrf %>" />
             </form>
             <li class="nav-item active ml-3">
                 <a class="nav-link" href="/user/showprofile/<%= session.User.id %>"> <%= session.User.name %> <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <input type="number" name="noti" id="noti" value="0" hidden>
-              <a class="nav-link" href="#"> Notification <mark class="blue tada" id="notic" hidden></mark></a>
+              <input type="number" name="noti" id="notification_bar" value="0" hidden>
+              <a class="nav-link" href="#"> Notification <mark class="blue tada" id="notification_bar_anchor" hidden></mark></a>
             </li>
 
             <% if (session.User.role === 'publisher') { %>
@@ -114,7 +120,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+    <script type="text/javascript" src="/jst.js"></script>
     <!--TEMPLATES END-->
 
 
@@ -163,6 +169,135 @@
     <script src="/js/jquery.validate.min.js"></script>
     <script src="/js/bootstrap.js"></script>
     <script src="/js/customValidate.js"></script>
+    <script src="/js/underscore.js"></script>
     <!--SCRIPTS END-->
+
+    <script type="text/javascript" src="/jst.js"></script>
+    <script type="text/javascript">
+
+      io.socket.on('connect', () => {
+        console.log('Socket connected!!!');
+      });
+
+      const UserIndexPage = {
+        statusUpdate: (id, message) => {
+          if (message.loggedIn) {
+            const $userRow = $('tr[data-id="' + id + '"] td img').first();
+            $userRow.attr('src', "/images/icon-online.png");
+          } else {
+            const $userRow = $('tr[data-id="' + id + '"] td img').first();
+            $userRow.attr('src', "/images/icon-offline.png");
+          }
+        },
+
+        addUser: (user) => {
+          // obj is going to encompass both the new user data as well as the _csrf info from
+          // the layout.ejs file
+          const obj = {
+            user: user.data,
+            _csrf: window.overlord.csrf || ''
+          };
+
+          // Add the template to the bottom of the User Administration Page
+          $( 'tr:last' ).after(
+            // This is the path to the templates file
+            JST['assets/templates/addUser.ejs']( obj )
+          );
+        },
+
+        // Remove the user from the User Administration Page
+        destroyUser: (id) => {
+          $('tr[data-id="' + id + '"]').remove();
+        }
+      };
+
+      const updateUserInDom = (userId, message) => {
+        // page I on now
+        let page_path = document.location.pathname;
+
+        // Strip trailing slash if we've got one
+        page_path = page_path.replace(/(\/)$/, '');
+
+        // Route to the appropriate user update handler based on which page you're on
+        switch (page_path) {
+
+          case '/user/indexuser':
+
+            if (message.verb === 'update') {
+              UserIndexPage.statusUpdate(userId, message);
+            }
+
+            if (message.verb === 'create') {
+              UserIndexPage.addUser(message);
+              UserIndexPage.statusUpdate(userId, message);
+            }
+
+            if (message.verb === 'destroy') {
+              UserIndexPage.destroyUser(userId);
+            }
+
+            break;
+        }
+      };
+
+      const displayFlashActivity = (message) => {
+        $(document).ready(function(){
+          $('#chatAudio')[0].play();
+          $(".navbar").after("<div class='alert alert-success'>" + message.name + message.action + "</div>");
+          $(".alert").fadeOut(5000);
+        });
+      }
+
+      const cometMessageReceivedFromServer = (message) => {
+        const page_route = document.location.pathname;
+
+        if (String(page_route) === "/session/loginpage" || String(page_route) === "/") {
+        } else {
+          if (message.model === 'user') {
+            const userId = message.id;
+
+            updateUserInDom(userId, message);
+
+            if(message.verb !== "destroy") {
+              displayFlashActivity(message);
+            }
+          }
+        }
+      }
+
+      const displayFlashReq = (message) => {
+        $(document).ready(() => {
+          if (message.user_id == document.getElementById("user_id_temp").value) {
+            $('#chatAudio')[0].play();
+            $(".navbar").after("<div class='alert alert-success'>" + message.msg + "</div>");
+            $(".alert").fadeOut(5000);
+
+            let k = parseInt(document.getElementById('notification_bar').value);
+
+            document.getElementById('notification_bar').value = k+1;
+            document.getElementById('notification_bar_anchor').innerHTML = document.getElementById('notification_bar').value;
+            document.getElementById('notification_bar_anchor').hidden = false;
+
+          }
+        });
+      }
+
+      io.socket.on('message', cometMessageReceivedFromServer);
+
+      io.socket.get('/user/subscribe', (data, jwr) => {
+        if (jwr.error) {
+          console.error('Could not subscribe to User-related notifications: ' + jwr.error);
+          return;
+        }
+        if (data == 200) {
+          console.log('Successfully subscribed.');
+        }
+      });
+
+      io.socket.on('user', cometMessageReceivedFromServer);
+
+      io.socket.on('user_banner_actions', displayFlashReq);
+
+    </script>
   </body>
 </html>

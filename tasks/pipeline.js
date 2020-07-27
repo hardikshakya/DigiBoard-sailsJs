@@ -59,7 +59,7 @@ var jsFilesToInject = [
 // >   https://sailsjs.com/docs/concepts/assets/task-automation
 //
 var templateFilesToInject = [
-  'templates/**/*.html'
+  'templates/**/*.ejs'
 ];
 
 // The following code exists to parse the arrays of glob expressions above, and
