@@ -57,6 +57,8 @@ module.exports.routes = {
   '/banner/indexyourbanner/:id': 'banner/indexYourBanner',
   '/banner/indexbanner': 'user/indexBanner',
 
+  '/banner/mapselectedbanner/:id': 'banner/mapSelectedBanner',
+
 
   /***************************************************************************
   *                                                                          *

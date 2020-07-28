@@ -19,7 +19,9 @@ module.exports.custom = {
   jwtTokenSecret : process.env.JWT_TOKEN_SECRET,
 
   sendGridToken: process.env.SENDGRID_TOEKN,
-  sendGridNewUserTemplateId: process.env.SENDGRID_NEW_USER_TEMPLATE_ID
+  sendGridNewUserTemplateId: process.env.SENDGRID_NEW_USER_TEMPLATE_ID,
+
+  openCageMapApiKey: process.env.OPENCAGE_API_KEY,
 
 
 };

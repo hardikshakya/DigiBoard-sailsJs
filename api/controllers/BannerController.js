@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+const request = require('request');
+
 module.exports = {
   newBanner: (req, res) => {
     res.view();
@@ -104,6 +106,29 @@ module.exports = {
 
       res.view({
         banners: allBannerData
+      });
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
+
+  mapSelectedBanner: async (req, res) => {
+    try {
+      const bannerData = await Banner.findOne(req.param('id'));
+      const encodedAddress = encodeURIComponent(bannerData.location_address);
+
+      request({
+        url: `https://api.opencagedata.com/geocode/v1/json?q=${encodedAddress}&key=${sails.config.custom.openCageMapApiKey}&pretty=1`,
+        json: true
+      },async (error, response, body) => {
+        const lat = body.results[0].geometry.lat;
+        const lng = body.results[0].geometry.lng;
+
+        await Banner.update({id: bannerData.id }).set({ latitude: lat, longitude: lng });
+      });
+
+      res.view({
+        banner: bannerData
       });
     } catch (error) {
       return res.HandleResponse(error, false);
