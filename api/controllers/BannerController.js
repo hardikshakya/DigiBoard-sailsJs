@@ -6,6 +6,7 @@
  */
 
 const request = require('request');
+const { PythonShell } = require('python-shell');
 
 module.exports = {
   newBanner: (req, res) => {
@@ -133,7 +134,28 @@ module.exports = {
     } catch (error) {
       return res.HandleResponse(error, false);
     }
-  }
+  },
+
+  showTraffic: async (req, res) => {
+    try {
+      const bannerData = await Banner.findOne(req.param('id'));
+      let options = {
+        mode: 'text',
+        pythonOptions: ['-u'],
+        scriptPath: 'assets/python',
+        args: [sails.config.custom.trafficDataCsvFilePath, `${bannerData.city_name}`]
+      };
+
+      PythonShell.run('trafficdata.py', options, (err, results) => {
+        if (err) throw err;
+        const myArray = JSON.stringify(results);
+
+        return res.send(myArray);
+      });
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
 
 };
 

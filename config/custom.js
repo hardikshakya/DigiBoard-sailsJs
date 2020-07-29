@@ -23,5 +23,7 @@ module.exports.custom = {
 
   openCageMapApiKey: process.env.OPENCAGE_API_KEY,
 
+  trafficDataCsvFilePath: process.env.CSV_FILE_PATH,
+
 
 };

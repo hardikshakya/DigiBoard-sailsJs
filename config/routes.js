@@ -55,10 +55,11 @@ module.exports.routes = {
   '/banner/destroybanner/:id': 'banner/destroyBanner',
 
   '/banner/indexyourbanner/:id': 'banner/indexYourBanner',
-  '/banner/indexbanner': 'user/indexBanner',
+  '/banner/indexbanner': 'banner/indexBanner',
 
   '/banner/mapselectedbanner/:id': 'banner/mapSelectedBanner',
 
+  'GET /banner/showtraffic/:id': 'banner/showTraffic',
 
   /***************************************************************************
   *                                                                          *
