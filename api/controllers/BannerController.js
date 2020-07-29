@@ -37,10 +37,14 @@ module.exports = {
     try {
       const bannerData = await Banner.findOne(req.param('id'));
       const userData = await User.findOne({ 'id': bannerData.user_id });
+      const allTimeslotsData = await Timeslot.find({ 'banner_id': bannerData.id });
+      const requestedslotsData = await Requestedslot.find({ 'banner_id': bannerData.id });
 
       res.view({
         banner: bannerData,
-        user: userData
+        user: userData,
+        timeslots: allTimeslotsData,
+        requestedslots: requestedslotsData,
       });
     } catch (error) {
       return res.HandleResponse(error, false);
@@ -156,6 +160,89 @@ module.exports = {
       return res.HandleResponse(error, false);
     }
   },
+
+  createTimeSlotPage: async (req, res) => {
+    try {
+      const bannerData = await Banner.findOne(req.param('id'));
+
+      res.view({
+        banner: bannerData
+      });
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
+
+  addNewTimeslot: async (req, res) => {
+    try {
+      const timeslotData = await Timeslot.create(req.allParams()).fetch();
+      const bannerId = req.param('banner_id');
+      const dateArray = JSON.parse(req.param('date_array'));
+      const weekArray = JSON.parse(req.param('week_array'));
+      const startTimeArray = JSON.parse(req.param('starttime_array'));
+      const endTimeArray = JSON.parse(req.param('endtime_array'));
+      const priceArray = JSON.parse(req.param('price_array'));
+
+      req.session.authenticated = true;
+      req.session.Timeslot = timeslotData;
+      req.session.verified = true;
+
+      for (let index = 0; index < dateArray.length; index++) {
+        for (let index1 = 0; index1 < startTimeArray.length; index1++) {
+          let INSERT_QUERY =
+          `
+          INSERT INTO
+            timeslot
+          (createdAt, updatedAt, banner_id, date, day, time_from, time_to, is_active, is_requested, price)
+          VALUES
+            ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          `;
+
+          await sails.sendNativeQuery(
+            INSERT_QUERY,
+            [
+              Date.now(),
+              Date.now(),
+              bannerId,
+              dateArray[index],
+              weekArray[index],
+              startTimeArray[index1],
+              endTimeArray[index1],
+              0,
+              0,
+              priceArray[index1]
+            ]
+          );
+        }
+      }
+
+      res.redirect('/banner/showbanner/'+ bannerId);
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
+
+  destroyTimeslot: async (req, res) => {
+    try {
+      const timeslotData = await Timeslot.findOne(req.param('id'));
+
+      if (!timeslotData.is_active) {
+        await Timeslot.destroy(req.param('id'));
+      }
+
+      res.redirect('/banner/showbanner/'+ timeslotData.banner_id);
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
+
+  requestSlot: async (req, res) => {
+    try {
+
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  }
 
 };
 

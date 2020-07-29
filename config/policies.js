@@ -31,6 +31,12 @@ module.exports.policies = {
     'destroyUser': 'admin',
 
     'subscribe': ['flash','authenticated'],
+  },
+
+  banner: {
+    'editBanner': 'admin',
+    'updateBanner': 'admin',
+    'destroyBanner': 'admin',
   }
 
 };

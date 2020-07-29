@@ -5,10 +5,173 @@
 	<h3>Contact Owner: <%= user.email %>  </h3>
   <h3>Address: <%= banner.location_address %>  </h3>
 	<h3>Size: <%= banner.banner_length %> * <%= banner.banner_height %>  </h3>
-	<input type="input" id="t1" value="<%= banner.id %>" hidden>
-  <input type="input" id="t2" value="" hidden>
+	<input type="input" id="hidden_banner_id" value="<%= banner.id %>" hidden>
+  <input type="input" id="hidden_traffic_data" value="" hidden>
 
   <% if(session.User.role === 'publisher' && session.User.id === user.id) { %>
-		<a class="btn btn-medium btn-warning mt-3" href="/editbanner/editbanner/<%= banner.id %>">Edit Banner</a>
-	<% } %>
+    <a class="btn btn-medium btn-warning mt-3" href="/banner/editbanner/<%= banner.id %>">Edit Banner</a>
+    <a class="btn btn-medium btn-primary mt-3" href="/banner/createtimeslotpage/<%= banner.id %>">Set Free Time-slots</a>
+  <% } %>
+  <button type="button" class="btn btn-medium btn-success mt-3" data-toggle="popover" title="Traffic Chart" data-html="true" id="btn-traffic" disabled>Show Traffic</button>
+
+  <div class="container mt-4">
+		<h3>Available Timeslot</h3>
+		<table class='table'>
+			<tr>
+				<th>ID</th>
+				<th>Date</th>
+				<th>Day</th>
+				<th>Time From</th>
+				<th>Time To</th>
+				<th>Price</th>
+				<th></th>
+      </tr>
+
+      <%
+	      let request_temp = -1 ;
+		    let requestedSlotArray = [];
+		    _.each(requestedslots, (requestedslots) => {
+			    if ( requestedslot.sender_id === session.User.id ) {
+				    request_temp++;
+				    requestedSlotArray[request_temp] = requestedslot;
+			    }
+		    });
+	    %>
+
+			<% _.each(timeslots, (timeslot) => { %>
+
+				<% if (timeslot.date !== '') { %>
+					<tr data-id="<%= timeslot.id %>" data-model="timeslot">
+			      <td><%= timeslot.id %></td>
+			      <td><%= timeslot.date %></td>
+						<td><%= timeslot.day %></td>
+						<td><%= timeslot.time_from %></td>
+						<td><%= timeslot.time_to %></td>
+						<td><%= timeslot.price %></td>
+
+						<% if(session.User.role === 'publisher' && user.id === session.User.id) { %>
+              <td>
+                <form action="/banner/destroytimeslot/<%= timeslot.id %>" method="POST">
+                  <input type="hidden" name="_method" value="delete"/>
+                  <input type="submit" class="btn btn-sm btn-danger" value="Delete"/>
+                  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                </form>
+              </td>
+						<% } %>
+
+						<% if( timeslot.is_active === true && session.User.role === 'advertiser') { %>
+							<td><a href="#" class="btn btn-sm btn-secondary disabled" aria-disabled="true">Booked</a></td>
+						<% } %>
+
+						<% let temp = 1; %>
+
+						<% if (request_temp > -1) {
+							for ( let i = 0; i <= request_temp; i++ ) {
+								if(timeslot.is_active === false && timeslot.is_requested === true && requestedSlotArray[i].timeslot_id === timeslot.id) { %>
+									<td><a href="#" class="btn btn-sm btn-primary disabled" aria-disabled="true">Your Already Requested</a></td>
+								  <% temp = 0; break;
+								}
+              }
+
+							if(session.User.role === 'advertiser' && temp === 1 && timeslot.is_active === false) { %>
+								<td><a href="/banner/requestslot/<%= timeslot.id %>" class="btn btn-sm btn-info">Sent Request</a></td>
+							  <% temp = 1;
+              }
+
+						} else {
+							if(timeslot.is_active === false && session.User.role === 'advertiser') { %>
+								<td><a href="/banner/requestslot/<%= timeslot.id %>" class="btn btn-sm btn-info">Sent Request</a></td>
+							  <% temp = 0;
+							}
+						} %>
+					</tr>
+				<% }
+			}) %>
+
+		</table>
+	</div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(() => {
+    const bannerId = parseInt(document.getElementById("hidden_banner_id").value);
+
+    $.ajax({
+      url: '/banner/showtraffic/' + bannerId,
+      type: 'GET',
+      success: (response) => {
+        document.getElementById("hidden_traffic_data").value = response;
+        document.getElementById("btn-traffic").disabled = false;
+       },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+
+    $('[data-toggle="popover"]').popover({
+      placement : 'top',
+      content : "<div id='top_x_div' style='width: 700px; height: 250px; float: left;' class='ml-3 mb-3'></div>"
+    });
+
+    $('[data-toggle="popover"]').click((e) => {
+      const trafficData = JSON.parse(document.getElementById("hidden_traffic_data").value);
+
+      const drawStuff = () => {
+        const data = new google.visualization.arrayToDataTable([
+          ['Hours', 'Average Number'],
+          ["0", parseInt(trafficData[0])],
+          ["1", parseInt(trafficData[1])],
+          ["2", parseInt(trafficData[2])],
+          ["3", parseInt(trafficData[3])],
+          ["4", parseInt(trafficData[4])],
+          ["5", parseInt(trafficData[5])],
+          ["6", parseInt(trafficData[6])],
+          ["7", parseInt(trafficData[7])],
+          ["8", parseInt(trafficData[8])],
+          ["9", parseInt(trafficData[9])],
+          ["10", parseInt(trafficData[10])],
+          ["11", parseInt(trafficData[11])],
+          ["12", parseInt(trafficData[12])],
+          ["13", parseInt(trafficData[13])],
+          ["14", parseInt(trafficData[14])],
+          ["15", parseInt(trafficData[15])],
+          ["16", parseInt(trafficData[16])],
+          ["17", parseInt(trafficData[17])],
+          ["18", parseInt(trafficData[18])],
+          ["19", parseInt(trafficData[19])],
+          ["20", parseInt(trafficData[20])],
+          ["21", parseInt(trafficData[21])],
+          ["22", parseInt(trafficData[22])],
+          ["23", parseInt(trafficData[23])]
+        ]);
+
+        const options = {
+          title: 'Traffic Data',
+          width: 700,
+          legend: { position: 'none' },
+          bars: 'vertical',
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Hour(0-23)'},
+            },
+            y: {
+              0: { side: 'left', label: 'Average Number'},
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+        let chart = new google.charts.Bar(document.getElementById('top_x_div'));
+
+        chart.draw(data, options);
+      };
+
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
+    });
+  });
+</script>

@@ -61,6 +61,12 @@ module.exports.routes = {
 
   'GET /banner/showtraffic/:id': 'banner/showTraffic',
 
+  '/banner/createtimeslotpage/:id': 'banner/createTimeSlotPage',
+  '/banner/addnewtimeslot': 'banner/addNewTimeslot',
+  '/banner/destroytimeslot/:id': 'banner/destroyTimeslot',
+
+  '/banner/requestslot/:id': 'banner/requestSlot',
+
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

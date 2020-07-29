@@ -1,0 +1,341 @@
+<form action="/banner/addnewtimeslot" method="POST" id="sign-up-form" class="form-signin">
+
+  <h2 class="form-signin-heading">Fill Time-Slot's Details</h2>
+  <input type="input" id="banner_id_hidden" value="<%= banner.id %>" hidden>
+  <input type="input" id="traffic_data_hidden" value="" hidden>
+  <br>
+
+  <% if(flash && flash.err) { %>
+    <ul class="alert alert-success">
+      <% Object.keys(flash.err).forEach(function(error) { %>
+        <li><%- JSON.stringify(flash.err[error]) %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Select Start and End Date</label>
+    <input type="text" name="date-range" class="form-control" value="01/01/2020 - 01/15/2020" style="width: 70%;"/>
+  </div>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Select Week Days</label>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Sunday" id="defaultCheck0" disabled>
+      <label class="form-check-label" for="defaultCheck0">
+        Sunday
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Monday" id="defaultCheck1" disabled>
+      <label class="form-check-label" for="defaultCheck1">
+        Monday
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Tuesday" id="defaultCheck2" disabled>
+      <label class="form-check-label" for="defaultCheck2">
+        Tuesday
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Wednesday" id="defaultCheck3" disabled>
+      <label class="form-check-label" for="defaultCheck3">
+        Wednesday
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Thursday" id="defaultCheck4" disabled>
+      <label class="form-check-label" for="defaultCheck4">
+        Thursday
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Friday" id="defaultCheck5" disabled>
+      <label class="form-check-label" for="defaultCheck5">
+        Friday
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" name="selDays" type="checkbox" value="Saturday" id="defaultCheck6" disabled>
+      <label class="form-check-label" for="defaultCheck6">
+        Saturday
+      </label>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="col-xs-2 mt-3">
+      <div class="col-md-12" >
+        <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Time Selection</label>
+        <div id="field">
+          <div id="field0">
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="action_id">Start Time</label>
+              <div class="col-md-5">
+                <input id="action_id" name="action_id" type="text" placeholder="" class="form-control input-md">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="action_name">End Time</label>
+              <div class="col-md-5">
+                <input id="action_name" name="action_name" type="text" placeholder="" class="form-control input-md">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-10 control-label" for="action_traffic">Average Traffic at that timeslot</label>
+              <div class="col-md-5">
+                <button type="button" class="btn btn-success" data-toggle="popover" title="Traffic Chart" data-html="true" id="btn-traffic" disabled>Show Traffic</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="action_price">Price</label>
+              <div class="col-md-5">
+                <input id="action_price" name="action_price" type="text" placeholder="" class="form-control input-md">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-4">
+            <button id="add-more" name="add-more" class="btn btn-primary">Add More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input class="form-check-input" type="number" value="<%= banner.id %>" name="banner_id" hidden>
+  <input class="form-check-input" type="text" value="" id="date_array_id" name="date_array" hidden>
+  <input class="form-check-input" type="text" value="" id="week_array_id" name="week_array" hidden>
+  <input class="form-check-input" type="text" value="" id="starttime_array_id" name="starttime_array" hidden>
+  <input class="form-check-input" type="text" value="" id="endtime_array_id" name="endtime_array" hidden>
+  <input class="form-check-input" type="text" value="" id="price_array_id" name="price_array" hidden>
+
+  <input type="submit" class="btn btn-lg btn-primary btn-block mt-3" id="but" value="Create Timeslot">
+  <input type="hidden" name="_csrf" value="<%= _csrf %>">
+</form>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+
+<script>
+
+  const bannerId = parseInt(document.getElementById("banner_id_hidden").value);
+  const currentDate = new Date();
+  const fullDate = currentDate.getMonth()+1 + "/" + currentDate.getDate() + "/" + currentDate.getFullYear();
+
+	$.ajax({
+    url: '/banner/showtraffic/' + bannerId,
+    type: 'GET',
+    success: (response) => {
+      document.getElementById("traffic_data_hidden").value = response;
+      document.getElementById("btn-traffic").disabled = false;
+    },
+    error: (error) => {
+      console.log(error);
+    }
+  });
+
+  $('input[name="date-range"]').daterangepicker({
+    opens: 'left',
+    minDate: fullDate
+  }, (start, end, label) => {
+    let dateArray = [];
+    let monthArray = [];
+    let weekArray = [];
+    let selectedDaysArray = [];
+    let selectedDatesArray = [];
+    const dateStart = moment(start.format('DD/MM/YYYY'), 'DD/MM/YYYY');
+    const dateEnd = moment(end.format('DD/MM/YYYY'), 'DD/MM/YYYY');
+    const diffBetweenDates = dateEnd.diff(dateStart, 'days');
+
+    for ( let i = 0; i <= diffBetweenDates; i++ ) {
+      const temp1 = moment(dateStart).add(i, 'days');
+      const tempDate = moment(temp1).format('D/M/YYYY');
+      const tempMonth = moment(temp1).format('M');
+      const weekDay = moment(temp1).format('dddd');
+
+      dateArray[i] = tempDate;
+      monthArray[i] = tempMonth;
+      weekArray[i] = weekDay;
+
+      if ( weekDay === 'Sunday' ) { document.getElementById("defaultCheck0").disabled = false; }
+      if ( weekDay === 'Monday' ) { document.getElementById("defaultCheck1").disabled = false; }
+      if ( weekDay === 'Tuesday' ) { document.getElementById("defaultCheck2").disabled = false; }
+      if ( weekDay === 'Wednesday' ) { document.getElementById("defaultCheck3").disabled = false; }
+      if ( weekDay === 'Thursday' ) { document.getElementById("defaultCheck4").disabled = false; }
+      if ( weekDay === 'Friday' ) { document.getElementById("defaultCheck5").disabled = false; }
+      if ( weekDay === 'Saturday' ) { document.getElementById("defaultCheck6").disabled = false; }
+    }
+
+    let favorite = [];
+
+    $(document).ready(function() {
+
+      $("#but").click(function() {
+        $.each($("input[name='selDays']:checked"), function() {
+          favorite.push($(this).val());
+        });
+
+        let tempK = 0;
+
+        for(let i = 0; i <= diffBetweenDates; i++) {
+          for(let j = 0; j <= favorite.length; j++) {
+            if(weekArray[i] === favorite[j]) {
+              selectedDaysArray[tempK] = weekArray[i];
+              selectedDatesArray[tempK] = dateArray[i];
+              tempK++;
+            }
+          }
+        }
+
+        datesArrayString = JSON.stringify(selectedDatesArray);
+        daysArrayString = JSON.stringify(selectedDaysArray);
+        document.getElementById("date_array_id").value = datesArrayString;
+        document.getElementById("week_array_id").value = daysArrayString;
+
+        let startTimeArray = [];
+        let endTimeArray = [];
+        let priceArray = [];
+
+        $("input:text[name='action_id']").each(function(){
+          startTimeArray.push($(this).val());
+        });
+        $("input:text[name='action_name']").each(function(){
+          endTimeArray.push($(this).val());
+        });
+        $("input:text[name='action_price']").each(function(){
+          priceArray.push($(this).val());
+        });
+
+        startTimeArrayString = JSON.stringify(startTimeArray);
+        endTimeArrayString = JSON.stringify(endTimeArray);
+        priceArrayString = JSON.stringify(priceArray);
+
+        document.getElementById("starttime_array_id").value = startTimeArrayString;
+        document.getElementById("endtime_array_id").value = endTimeArrayString;
+        document.getElementById("price_array_id").value = priceArrayString;
+      });
+
+      let next = 0;
+      $("#add-more").click(function(e){
+        e.preventDefault();
+
+        var addto = "#field" + next;
+        var addRemove = "#field" + (next);
+        next = next + 1;
+
+        var newIn = ' <div id="field'+ next +'" name="field'+ next +'"><div class="form-group"> <label class="col-md-4 control-label" for="action_id">Start Time</label> <div class="col-md-5"> <input id="action_id'+ next +'" name="action_id" type="text" placeholder="" class="form-control input-md"> </div></div> <div class="form-group"> <label class="col-md-4 control-label" for="action_name">End Time</label> <div class="col-md-5"> <input id="action_name'+ next +'" name="action_name" type="text" placeholder="" class="form-control input-md"> </div></div>  <div class="form-group"> <label class="col-md-10 control-label" for="action_traffic">Average Traffic at that timeslot</label> <div class="col-md-5"> <button type="button" class="btn btn-success" data-toggle="popover" title="Traffic Chart" data-html="true">Show Traffic</button> </div></div>  <div class="form-group"> <label class="col-md-4 control-label" for="action_price">Price</label> <div class="col-md-5"> <input id="action_price" name="action_price" type="text" placeholder="" class="form-control input-md"> </div></div>';
+        var newInput = $(newIn);
+        var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >Remove</button></div></div><div id="field">';
+        var removeButton = $(removeBtn);
+
+        $(addto).after(newInput);
+        $(addRemove).after(removeButton);
+        $("#field" + next).attr('data-source',$(addto).attr('data-source'));
+        $("#count").val(next);
+        $('.remove-me').click(function(e){
+          e.preventDefault();
+          var fieldNum = this.id.charAt(this.id.length-1);
+          var fieldID = "#field" + fieldNum;
+          $(this).remove();
+          $(fieldID).remove();
+        });
+        $('[data-toggle="popover"]').popover({
+            placement : 'top',
+            content : "<div id='top_x_div' style='width: 600px; height: 300px; float: left;' class='ml-3 mb-3'></div>"
+        });
+
+        $('[data-toggle="popover"]').click(function(e){
+
+          var maA = JSON.parse(document.getElementById("traffic_data_hidden").value);
+          var iSet = document.getElementById("action_name"+next).value;
+
+	        google.charts.load('current', {'packages':['bar']});
+	        google.charts.setOnLoadCallback(drawStuff);
+
+	        function drawStuff() {
+    	      var data = new google.visualization.arrayToDataTable([
+			        ['Hours', 'Average Number'],
+			        [iSet, parseInt(maA[iSet])]
+    	      ]);
+
+    	      var options = {
+      		    title: 'Traffic Data',
+      		    width: 200,
+      		    legend: { position: 'none' },
+      		    bars: 'vertical',
+      		    axes: {
+        		    x: {
+          		  	0: { side: 'top', label: 'Hour(0-23)'},
+        		    },
+        		    y: {
+          			  0: { side: 'left', label: 'Average Number'},
+        		    }
+      		    },
+      		    bar: { groupWidth: "90%" }
+    	      };
+
+    	      var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+    	      chart.draw(data, options);
+  	      };
+
+        });
+
+      });
+
+      $('[data-toggle="popover"]').popover({
+        placement : 'top',
+        content : "<div id='top_x_div' style='width: 600px; height: 300px; float: left;' class='ml-3 mb-3'></div>"
+      });
+
+      $('[data-toggle="popover"]').click(function(e){
+
+        var maA = JSON.parse(document.getElementById("traffic_data_hidden").value);
+        var iSet = document.getElementById("action_name").value;
+
+	      google.charts.load('current', {'packages':['bar']});
+	      google.charts.setOnLoadCallback(drawStuff);
+
+	      function drawStuff() {
+    	    var data = new google.visualization.arrayToDataTable([
+			      ['Hours', 'Average Number'],
+			      [iSet, parseInt(maA[iSet])]
+    	    ]);
+
+    	    var options = {
+      		  title: 'Traffic Data',
+      		  width: 200,
+      		  legend: { position: 'none' },
+      		  bars: 'vertical',
+      		  axes: {
+        		  x: {
+          			0: { side: 'top', label: 'Hour(0-23)'},
+        		  },
+        		  y: {
+          			0: { side: 'left', label: 'Average Number'},
+        		  }
+      		  },
+      		  bar: { groupWidth: "90%" }
+    	    };
+
+    	    var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+    	    chart.draw(data, options);
+  	    };
+      });
+    });
+  });
+
+</script>
