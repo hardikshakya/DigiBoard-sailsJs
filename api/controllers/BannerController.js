@@ -238,11 +238,111 @@ module.exports = {
 
   requestSlot: async (req, res) => {
     try {
+      const timeslotData = await Timeslot.findOne(req.param('id'));
+      const bannerData = await Banner.findOne({ id: timeslotData.banner_id });
+      const receiverData = await User.findOne({ id: bannerData.user_id });
+      const senderData = await User.findOne({ id: req.session.User.id });
+      const requestedslotObj = {
+        sender_id: senderData.id,
+        receiver_id: receiverData.id,
+        banner_id: bannerData.id,
+        timeslot_id: timeslotData.id
+      };
+      const requestedslotData = await Requestedslot.create(requestedslotObj).fetch();
+      const notificationObj = {
+        receiver_id: receiverData.id,
+        notifier_id: senderData.id,
+        request_id: requestedslotData.id,
+        request_type: 'request',
+        message: `${senderData.name} has requested for Banner ' ${bannerData.banner_name} ' on date ${timeslotData.date} from time ${timeslotData.time_from} to ${timeslotData.time_to} for ${timeslotData.price} Rs.`
+      };
 
+      await Notification.create(notificationObj);
+      await Timeslot.update({id: timeslotData.id }).set( { is_requested: true });
+
+      req.session.Request = requestedslotData;
+
+      sails.sockets.broadcast(
+        'user',
+        'user_banner_actions',
+        {
+          user_id: receiverData.id,
+          sen_id: senderData.id,
+          msg: `${senderData.name} has requested for Banner ' ${bannerData.banner_name} ' on date ${timeslotData.date} from time ${timeslotData.time_from} to ${timeslotData.time_to} for ${timeslotData.price} Rs.`
+        }
+      );
+
+      res.redirect('/banner/showbanner/'+ bannerData.id);
     } catch (error) {
       return res.HandleResponse(error, false);
     }
-  }
+  },
+
+  acceptSlot: async (req, res) => {
+    try {
+      const requestedslotData = await Requestedslot.update({ id: req.param('id') }).set({ is_accepted: true }).fetch();
+      const requestsForSlot = await Requestedslot.find({ 'timeslot_id': requestedslotData[0].timeslot_id });
+      const receiverData = await User.findOne({ id: requestedslotData[0].receiver_id });
+      const timeslotData = await Timeslot.findOne({ id: requestedslotData[0].timeslot_id });
+
+      await Timeslot.update({ id: requestedslotData[0].timeslot_id }).set({ is_active: true  });
+
+      for (let index = 0; index < requestsForSlot.length; index++) {
+        const senderData = await User.findOne({ id: requestsForSlot[index].sender_id });
+        const bannerData = await Banner.findOne({ id: requestsForSlot[index].banner_id });
+
+        if (!requestsForSlot[index].is_accepted) {
+          await Notification.update({ request_id: requestsForSlot[index].id }).set({ action: 'reject' });
+
+          const notificationObj = {
+            receiver_id: senderData.id,
+            notifier_id: receiverData.id,
+            request_id: requestsForSlot[index].id,
+            request_type: 'request reject',
+            message: `${receiverData.name} has rejected your request for Banner ' ${bannerData.banner_name} '. Request's Deatails :Date ${timeslotData.date} , Time ${timeslotData.time_from} to ${timeslotData.time_to} for ${timeslotData.price} Rs.`
+          };
+          await Notification.create(notificationObj);
+
+          sails.sockets.broadcast(
+            'user',
+            'user_banner_actions',
+            {
+              user_id: senderData.id,
+              sen_id: receiverData.id,
+              msg: `${receiverData.name} has rejected your request for Banner ' ${bannerData.banner_name} '. Request's Deatails :Date ${timeslotData.date} , Time ${timeslotData.time_from} to ${timeslotData.time_to} for ${timeslotData.price} Rs.`
+            }
+          );
+        }
+
+        if (requestsForSlot[index].is_accepted) {
+          await Notification.update({ request_id: requestsForSlot[index].id }).set({ action: 'accept' });
+
+          const notificationObj = {
+            receiver_id: senderData.id,
+            notifier_id: receiverData.id,
+            request_id: requestsForSlot[index].id,
+            request_type: 'request accepet',
+            message: `${receiverData.name} has accepeted your request for Banner ' ${bannerData.banner_name} '. Request's Deatails :Date ${timeslotData.date} , Time ${timeslotData.time_from} to ${timeslotData.time_to} for ${timeslotData.price} Rs.`
+          };
+          await Notification.create(notificationObj);
+
+          sails.sockets.broadcast(
+            'user',
+            'user_banner_actions',
+            {
+              user_id: senderData.id,
+              sen_id: receiverData.id,
+              msg: `${receiverData.name} has accepeted your request for Banner ' ${bannerData.banner_name} '. Request's Deatails :Date ${timeslotData.date} , Time ${timeslotData.time_from} to ${timeslotData.time_to} for ${timeslotData.price} Rs.`
+            }
+          );
+        }
+      }
+
+      res.redirect('/user/indexnotification/'+ receiverData.id);
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
 
 };
 

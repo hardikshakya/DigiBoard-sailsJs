@@ -1,0 +1,44 @@
+<div class="container mt-4">
+  <h3>Notification</h3>
+
+  <table class='table'>
+    <tr>
+      <th>From</th>
+      <th>Subject</th>
+      <th>Message</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% _.each(notifications, async (notification) => {
+      let i = notification.id;
+      let j = notification.notifier_id;
+    %>
+
+      <tr data-id="<%= notification.id %>" data-model="notification" <% if(notification.is_viewed) { %> style="background-color:#f7f7f7" <% } else { %> style="background-color:white" <% } %> >
+
+        <td><%= sendersUserDataArray[j].name %></td>
+        <td><%= notification.request_type %></td>
+        <td><%= notification.message %></td>
+        <td><%= notification.createdAt %></td>
+
+        <% if (notification.request_type === 'request' && session.User.role === 'publisher' && notification.action === 'none') { %>
+          <td><a href="/banner/acceptslot/<%= notification.request_id %>" class="btn btn-sm btn-primary">Accept</a></td>
+          <td><a href="#" class="btn btn-sm btn-warning">Reject</a></td>
+        <% }
+        if (notification.request_type === 'request' && session.User.role === 'publisher' && notification.action === 'accept') { %>
+          <td><a href="#" class="btn btn-sm btn-primary disabled" aria-disabled="true">Accepted</a></td>
+        <% }
+        if (notification.request_type === 'request' && session.User.role === 'publisher' && notification.action === 'reject') { %>
+          <td><a href="#" class="btn btn-sm btn-secondary disabled" aria-disabled="true">Rejected</a></td>
+        <% }
+        if (notification.request_type === 'request accepet' && session.User.role === 'advertiser' && notification.action !== 'paid') { %>
+          <td><a href="#" class="btn btn-sm btn-primary">Upload Content</a></td>
+        <% } %>
+      </tr>
+      <%
+      await Notification.update({ id: i }).set({ is_viewed: true });
+    }); %>
+  </table>
+</div>

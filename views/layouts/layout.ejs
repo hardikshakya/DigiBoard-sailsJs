@@ -48,7 +48,7 @@
             </li>
             <li class="nav-item">
               <input type="number" name="noti" id="notification_bar" value="0" hidden>
-              <a class="nav-link" href="#"> Notification <mark class="blue tada" id="notification_bar_anchor" hidden></mark></a>
+              <a class="nav-link" href="/user/indexnotification/<%= session.User.id %>"> Notification <mark class="blue tada" id="notification_bar_anchor" hidden></mark></a>
             </li>
 
             <% if (session.User.role === 'publisher') { %>

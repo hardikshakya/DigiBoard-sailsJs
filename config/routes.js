@@ -65,7 +65,9 @@ module.exports.routes = {
   '/banner/addnewtimeslot': 'banner/addNewTimeslot',
   '/banner/destroytimeslot/:id': 'banner/destroyTimeslot',
 
+  '/user/indexnotification/:id': 'notificationaction/indexNotification',
   '/banner/requestslot/:id': 'banner/requestSlot',
+  '/banner/acceptslot/:id': 'banner/acceptSlot',
 
   /***************************************************************************
   *                                                                          *
