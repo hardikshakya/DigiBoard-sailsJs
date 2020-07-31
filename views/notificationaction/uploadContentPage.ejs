@@ -1,0 +1,32 @@
+<form action="/banner/uploadadvertisement/<%= request.id %>" method="POST"  enctype="multipart/form-data" id="sign-up-form" class="form-signin">
+  <input type="hidden" name="_csrf" value="<%= _csrf %>">
+
+  <h2 class="form-signin-heading">Upload Your Content</h2>
+  <br>
+
+  <% if(flash && flash.err) { %>
+    <ul class="alert alert-success">
+      <% Object.keys(flash.err).forEach(function(error) { %>
+        <li><%- JSON.stringify(flash.err[error]) %></li>
+      <% }) %>
+    </ul>
+  <%  } %>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Title</label>
+    <input type="text" class="form-control" placeholder="Title of your content" name="content_title">
+  </div>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Description</label>
+    <input type="text" class="form-control" placeholder="Tell somthing about your content" name="content_description">
+  </div>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Select File</label>
+    <input type="file" class="form-control-file" name="file" multiple="multiple">
+  </div>
+
+  <input type="submit" class="btn btn-lg btn-primary btn-block mt-3" value="Next">
+
+</form>

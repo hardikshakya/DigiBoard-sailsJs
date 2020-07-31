@@ -34,7 +34,7 @@
           <td><a href="#" class="btn btn-sm btn-secondary disabled" aria-disabled="true">Rejected</a></td>
         <% }
         if (notification.request_type === 'request accepet' && session.User.role === 'advertiser' && notification.action !== 'paid') { %>
-          <td><a href="#" class="btn btn-sm btn-primary">Upload Content</a></td>
+          <td><a href="/banner/uploadcontent/<%= notification.request_id %>" class="btn btn-sm btn-primary">Upload Content</a></td>
         <% } %>
       </tr>
       <%

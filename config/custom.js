@@ -25,5 +25,7 @@ module.exports.custom = {
 
   trafficDataCsvFilePath: process.env.CSV_FILE_PATH,
 
+  assetsFolder: process.env.ASSETS_FOLDER,
+
 
 };

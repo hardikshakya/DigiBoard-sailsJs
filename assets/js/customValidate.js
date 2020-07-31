@@ -47,6 +47,15 @@ $(document).ready(() => {
       },
       country_name: {
         required: true
+      },
+      content_title: {
+        required: true
+      },
+      content_description: {
+        required: true
+      },
+      file: {
+        required: true
       }
 	  },
     success: (element) => {

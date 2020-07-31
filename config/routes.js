@@ -69,6 +69,11 @@ module.exports.routes = {
   '/banner/requestslot/:id': 'banner/requestSlot',
   '/banner/acceptslot/:id': 'banner/acceptSlot',
 
+  '/banner/uploadcontent/:id': 'notificationaction/uploadContentPage',
+  '/banner/uploadadvertisement/:id': 'notificationaction/uploadAdvertisement',
+
+  '/banner/paymentpage/:id': 'payment/paymentPage',
+
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *
