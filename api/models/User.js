@@ -32,7 +32,15 @@ module.exports = {
     online: {
       type: 'boolean',
       defaultsTo: false
-    }
+    },
+    pay_pk: {
+      type: 'string',
+      defaultsTo: '0'
+    },
+    pay_sk: {
+      type: 'string',
+      defaultsTo: '0'
+    },
   },
 
   customToJSON: function () {

@@ -1,0 +1,58 @@
+<div id="sign-up-form" class="form-signin">
+
+  <h2 class="form-signin-heading">Payment Section</h2>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><strong> Accepted Cards </strong></label>
+    <div class="icon-container">
+      <i class="fa fa-cc-visa fa-2x" style="color:navy;"></i>
+      <i class="fa fa-cc-amex fa-2x" style="color:blue;"></i>
+      <i class="fa fa-cc-mastercard fa-2x" style="color:red;"></i>
+      <i class="fa fa-cc-discover fa-2x" style="color:orange;"></i>
+    </div>
+  </div>
+  <br>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><strong> Name: </strong> </label>
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><%= banner.banner_name %></label>
+  </div>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><strong> Banner Address: </strong></label>
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><%= banner.location_address %></label>
+  </div>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><strong> Time-slot: </strong></label>
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><%= timeslot.time_from %> to <%= timeslot.time_to %></label>
+  </div>
+
+  <div class="control-group">
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><strong> Amount: </strong></label>
+    <label class="my-1 mr-2" for="inlineFormCustomSelectPref"><%= timeslot.price %></label>
+  </div>
+
+  <div class="control-group">
+    <form action="/banner/transaction/<%= request.id %>" method="POST">
+      <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="<%= user.pay_pk %>"
+        data-amount="<%= timeslot.price * 100 %>"
+        data-name="<%= banner.banner_name %>"
+        data-description="For Time <%= timeslot.time_from %> to <%= timeslot.time_to %>"
+        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+        data-locale="auto"
+        data-currency="inr">
+      </script>
+      <script>
+        document.getElementsByClassName('stripe-button-el')[0].style.display = 'none';
+      </script>
+      <button type="submit" class="btn btn-lg btn-primary btn-block mt-3">Continue to checkout</button>
+      <input type="hidden" name="_csrf" value="<%= _csrf %>">
+    </form>
+  </div>
+  <br>
+  <a href="/banner/uploadcontent/<%= request.id %>" class="btn btn-dark btn-lg w-100">Go Back</a>
+
+</div>

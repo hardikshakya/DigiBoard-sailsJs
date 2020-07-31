@@ -73,6 +73,8 @@ module.exports.routes = {
   '/banner/uploadadvertisement/:id': 'notificationaction/uploadAdvertisement',
 
   '/banner/paymentpage/:id': 'payment/paymentPage',
+  '/banner/transaction/:id': 'payment/transaction',
+  '/banner/success/:id': 'payment/success',
 
   /***************************************************************************
   *                                                                          *
