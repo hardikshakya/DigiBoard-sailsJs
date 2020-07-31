@@ -75,6 +75,8 @@ module.exports.routes = {
   '/banner/paymentpage/:id': 'payment/paymentPage',
   '/banner/transaction/:id': 'payment/transaction',
   '/banner/success/:id': 'payment/success',
+  '/user/indexyourorder/:id': 'payment/indexYourOrder',
+  '/user/indexyourpayment/:id': 'payment/indexYourPayment',
 
   /***************************************************************************
   *                                                                          *

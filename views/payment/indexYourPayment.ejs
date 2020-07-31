@@ -1,0 +1,28 @@
+<div class="container mt-4">
+	<h3>Payment Log</h3>
+	<table class='table'>
+		<tr>
+      <th>ID</th>
+      <th>Date</th>
+			<th>Banner</th>
+			<th>Customer</th>
+      <th>Product Details</th>
+      <th>Amount</th>
+      <th>Payment Method</th>
+    </tr>
+
+    <% _.each(payments, (payment) => {
+      let i = payment.id;
+    %>
+		  <tr data-id="<%= payment.id %>" data-model="payment">
+			  <td><%= payment.id %></td>
+			  <td><%= payment.createdAt %></td>
+        <td><%= banners[i].banner_name %></td>
+        <td><%= advertisers[i].name %></td>
+        <td>Date <%= timeslots[i].date %> , Time <%= timeslots[i].time_from %> to <%= timeslots[i].time_to %>.</td>
+        <td>₹ <%= payment.price %></td>
+        <td><%= payment.payment_type %></td>
+      </tr>
+		<% }) %>
+	</table>
+</div>

@@ -115,5 +115,61 @@ module.exports = {
       return res.HandleResponse(error, false);
     }
   },
+
+  indexYourOrder: async (req, res) => {
+    try {
+      const advertiserUserData = await User.findOne(req.param('id'));
+      const advertisementDatas = await Advertisement.find({
+        'advertiser_user_id': advertiserUserData.id,
+        'is_paid': true
+      }).sort('createdAt DESC');
+      const bannerData = [];
+      const timeslotData = [];
+
+      for (let index = 0; index < advertisementDatas.length; index++) {
+        let temp = advertisementDatas[index].id;
+
+        bannerData[temp] = await Banner.findOne({ 'id': advertisementDatas[index].banner_id });
+        timeslotData[temp] = await Timeslot.findOne({ 'id': advertisementDatas[index].timeslot_id });
+      }
+
+      res.view({
+        user: advertiserUserData,
+        advertisements: advertisementDatas,
+        banners: bannerData,
+        timeslots: timeslotData
+      });
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
+
+  indexYourPayment: async (req, res) => {
+    try {
+      const publisherUserData = await User.findOne(req.param('id'));
+      const paymentDatas = await Payment.find({ 'drawee_id': publisherUserData.id }).sort('createdAt DESC');
+      const bannerDataArray = [];
+      const timeslotDataArray = [];
+      const advertiserUserDataArray = [];
+
+      for (let index = 0; index < paymentDatas.length; index++) {
+        let temp = paymentDatas[index].id;
+
+        bannerDataArray[temp] = await Banner.findOne({ 'id': paymentDatas[index].banner_id });
+        timeslotDataArray[temp] = await Timeslot.findOne({ 'id': paymentDatas[index].timeslot_id });
+        advertiserUserDataArray[temp] = await User.findOne({ 'id': paymentDatas[index].payee_id });
+      }
+
+      res.view({
+        user: publisherUserData,
+        payments: paymentDatas,
+        banners: bannerDataArray,
+        timeslots: timeslotDataArray,
+        advertisers: advertiserUserDataArray
+      });
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  },
 };
 
