@@ -34,6 +34,10 @@ module.exports = {
     },
     price: {
       type: 'string'
+    },
+    is_paid: {
+      type: 'boolean',
+      defaultsTo: false
     }
   },
 

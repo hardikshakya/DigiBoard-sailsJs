@@ -78,6 +78,7 @@ module.exports.routes = {
   '/user/indexyourorder/:id': 'payment/indexYourOrder',
   '/user/indexyourpayment/:id': 'payment/indexYourPayment',
 
+  '/banner/showadvertisement/:id': 'banner/showActiveAdvertisement',
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

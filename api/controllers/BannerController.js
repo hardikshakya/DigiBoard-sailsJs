@@ -7,6 +7,7 @@
 
 const request = require('request');
 const { PythonShell } = require('python-shell');
+const moment = require('moment');
 
 module.exports = {
   newBanner: (req, res) => {
@@ -343,6 +344,55 @@ module.exports = {
       return res.HandleResponse(error, false);
     }
   },
+
+  showActiveAdvertisement: async (req, res) => {
+    try {
+      const bannerData = await Banner.findOne(req.param('id'));
+      const liveAdLogDatas = await Log.find({ 'banner_id': bannerData.id });
+      const currentDate = new Date();
+      const dateFormate = moment(currentDate).format('D/M/YYYY');
+      const currentTimeMinute = moment(currentDate).format('mm');
+
+      let timeslotDataArray = [];
+      let advertisementData;
+
+      req.session.authenticated = true;
+
+      if (liveAdLogDatas.length > 0) {
+        for (let index = 0; index < liveAdLogDatas.length; index++) {
+          const timeslotData = await Timeslot.findOne(liveAdLogDatas[index].timeslot_id);
+
+          if (timeslotData.date === dateFormate) {
+            if (timeslotData.time_from <= currentTimeMinute && timeslotData.time_to > currentTimeMinute) {
+              timeslotDataArray[0] = timeslotData;
+            }
+          }
+        }
+
+        if (timeslotDataArray.length > 0) {
+          advertisementData = await Advertisement.findOne({ 'timeslot_id': notA[0].id });
+        } else {
+          advertisementData = {
+            advertisement_title: 'No Ad',
+            advertisement_description: 'Book on DigiBoard.com',
+            content: '/images/noAd.jpg'
+          };
+        }
+      } else {
+        advertisementData = {
+          advertisement_title: 'No Ad',
+          advertisement_description: 'Book on DigiBoard.com',
+          content: '/images/noAd.jpg'
+        };
+      }
+
+      res.view({
+        advertisement: advertisementData
+      });
+    } catch (error) {
+      return res.HandleResponse(error, false);
+    }
+  }
 
 };
 

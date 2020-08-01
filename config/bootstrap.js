@@ -27,4 +27,17 @@ module.exports.bootstrap = async function() {
   // ]);
   // ```
 
+  _.extend(sails.hooks.http.app.locals, sails.config.http.locals);
+
+  // add the lines from here
+  // bootstrapping all the cronjobs in the crontab folder
+  const schedule = require('node-schedule');
+  sails.config.crontab.crons().forEach((item) => {
+    schedule.scheduleJob(item.interval,sails.config.crontab[item.method]);
+  });
+
+  // It’s very important to trigger this callback method when you are finished
+  // with the bootstrap! (otherwise your server will never lift, since it’s waiting on the bootstrap)
+  // cb();
+
 };

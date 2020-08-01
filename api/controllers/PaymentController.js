@@ -45,7 +45,7 @@ module.exports = {
         customer: customer.id
       }));
 
-      // await Timeslot.update({ id: timeslotData.id }).set({ paid: true });
+      await Timeslot.update({ id: timeslotData.id }).set({ is_paid: true });
       await Notification.update({ request_id: requestedslotData.id }).set({ action: 'paid' });
       const advertisementData = await Advertisement.update({ timeslot_id: timeslotData.id }).set({ is_paid: true }).fetch();
 
